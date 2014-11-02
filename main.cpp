@@ -24,6 +24,30 @@ Sample Input:
 .
 
 */
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <stdlib.h>
+
+using namespace std;
+
+void openDataFile(){
+    string fileName = "mytest.txt";
+    ifstream dataFile;
+    string line = "";
+    dataFile.open(fileName);
+    int agents = 0;
+    int ports = 0;
+    if (dataFile.is_open()){
+        while (getline(dataFile, line, ' ')){
+            int agents = atoi(line.c_str());
+            int ports = atoi(line.c_str());
+        }
+    }
+    cout << agents << endl;
+    cout << ports << endl;
+}
 
 int main() {
+    openDataFile();
 }
