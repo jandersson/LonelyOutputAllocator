@@ -39,7 +39,7 @@ void openDataFile(){
     string token;
     stringstream iss;
     ifstream dataFile;
-    vector<int> requestMatrix;
+    vector<vector<int> > requestMatrix;
     string line = "";
     dataFile.open(fileName);
     int agents = 0;
@@ -53,11 +53,13 @@ void openDataFile(){
         ports = atoi(line.c_str());
         //Get the entire line, then parse the line for spaces (whatever delimiter)
         while(getline(dataFile, line, '\n')){
+            vector<int> requestVector;
             iss << line;
             while(getline(iss, token, delimiter)){
                 cout << token;
-                requestMatrix.push_back(atoi(token.c_str()));
+                requestVector.push_back(atoi(token.c_str()));
             }
+            requestMatrix.push_back(requestVector);
             iss.clear();
             cout << '\n';
         }
@@ -66,9 +68,9 @@ void openDataFile(){
 
     cout << "Agents: " << agents << endl;
     cout << "Ports: " << ports << endl;
-    for(auto it = requestMatrix.begin(); it != requestMatrix.end(); it++){
-        cout << *it;
-    }
+    //for(auto it = requestMatrix.begin(); it != requestMatrix.end(); it++){
+    //    cout << *it;
+   // }
 }
 
 int main() {
