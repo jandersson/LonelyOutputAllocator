@@ -47,7 +47,7 @@ void openDataFile(){
     cout << dataFile.is_open() << endl;
     if (dataFile.is_open()){
         getline(dataFile, line, ' ');
-        cout << line << endl;
+        //cout << line << endl;
         agents = atoi(line.c_str());
         getline(dataFile, line);
         ports = atoi(line.c_str());
@@ -68,9 +68,13 @@ void openDataFile(){
 
     cout << "Agents: " << agents << endl;
     cout << "Ports: " << ports << endl;
-    //for(auto it = requestMatrix.begin(); it != requestMatrix.end(); it++){
-    //    cout << *it;
-   // }
+    cout << "Request Matrix\n-------\n";
+    for(auto it = requestMatrix.begin(); it != requestMatrix.end(); it++){
+        for (auto itt = it->begin(); itt != it->end(); itt++){
+            cout << *itt;
+        }
+        cout << endl;
+    }
 }
 
 int main() {
