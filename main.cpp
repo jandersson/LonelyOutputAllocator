@@ -28,9 +28,14 @@ Sample Input:
 #include <fstream>
 #include <vector>
 #include <sstream>
-
+#include <stdlib.h>
 
 using namespace std;
+
+//Function Prototypes
+int getCounts(vector<vector <int> >, int , int);
+vector<vector< int > > buildCountMatrix(vector<vector< int > >, vector<int> , int , int);
+void printMatrix(vector< vector < int > >);
 
 void openDataFile(){
     /* Opens a data file for reading */
@@ -44,13 +49,12 @@ void openDataFile(){
     dataFile.open(fileName);
     int agents = 0;
     int ports = 0;
-    cout << dataFile.is_open() << endl;
     if (dataFile.is_open()){
         getline(dataFile, line, ' ');
-        //cout << line << endl;
         agents = atoi(line.c_str());
         getline(dataFile, line);
         ports = atoi(line.c_str());
+
         //Get the entire line, then parse the line for spaces (whatever delimiter)
         while(getline(dataFile, line, '\n')){
             vector<int> requestVector;
@@ -63,13 +67,61 @@ void openDataFile(){
             iss.clear();
             cout << '\n';
         }
-
             }
 
     cout << "Agents: " << agents << endl;
     cout << "Ports: " << ports << endl;
     cout << "Request Matrix\n-------\n";
-    for(auto it = requestMatrix.begin(); it != requestMatrix.end(); it++){
+    // Print out the request matrix
+    printMatrix(requestMatrix);
+
+    vector<int> counts;
+    for(int port = 0; port < ports; port++){
+        counts.push_back(getCounts(requestMatrix, agents, port));
+    }
+
+    vector< vector < int > > countMatrix = buildCountMatrix(requestMatrix, counts, agents, ports);
+    cout << "Count Matrix\n------\n";
+    printMatrix(countMatrix);
+}
+
+vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, vector<int> counts, int agents, int ports){
+    vector<vector < int > > countMatrix;
+
+    for (int agent = 0; agent < agents; agent++){
+        vector< int > countVector;
+        countVector.resize(ports);
+        countMatrix.push_back(countVector);
+        for (int port = 0; port < ports; port++){
+            if (requestMatrix[agent][port]){
+                countMatrix[agent][port] = counts[port];
+            }
+        }
+    }
+
+    return countMatrix;
+}
+
+int getCounts(vector<vector <int> > requestMatrix, int agents, int port){
+    /*Get the number of requests for a given port and return it*/
+    int requests = 0;
+    for (int agent = 0; agent < agents; agent++){
+        if (requestMatrix[agent][port]){
+            requests += 1;
+        }
+    }
+    return requests;
+}
+
+void printVector(vector<int> counts){
+    //Print out counts vector
+    for(auto it = counts.begin(); it != counts.end(); it++){
+        cout << *it;
+    }
+}
+
+void printMatrix(vector< vector < int > > matrix){
+    for(auto it = matrix.begin(); it != matrix.end(); it++){
         for (auto itt = it->begin(); itt != it->end(); itt++){
             cout << *itt;
         }
