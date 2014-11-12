@@ -35,6 +35,7 @@ using namespace std;
 //Function Prototypes
 int getCounts(vector<vector <int> >, int , int);
 vector<vector< int > > buildCountMatrix(vector<vector< int > >, vector<int> , int , int);
+vector< vector < int > > buildGrantMatrix(vector< vector < int > >, int , int);
 void printMatrix(vector< vector < int > >);
 
 void openDataFile(){
@@ -83,6 +84,8 @@ void openDataFile(){
     vector< vector < int > > countMatrix = buildCountMatrix(requestMatrix, counts, agents, ports);
     cout << "Count Matrix\n------\n";
     printMatrix(countMatrix);
+
+    buildGrantMatrix(countMatrix, agents, ports);
 }
 
 vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, vector<int> counts, int agents, int ports){
@@ -99,6 +102,36 @@ vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, ve
         }
     }
 
+    return countMatrix;
+}
+
+vector< vector < int > > buildGrantMatrix(vector< vector < int > > countMatrix, int agents, int ports){
+    //Loop through each vector and find the lowest number
+    bool found = false;
+    int agent = 0;
+    int i = 1;
+    while(not found){
+
+        for (int port = 0; port < ports; port++){
+            cout << countMatrix[agent][port] << endl;
+            if (countMatrix[agent][port] == i)
+                found = true;
+        }
+        if (found)
+            break;
+        i += 1;
+        if (i > agents)
+            break;
+    }
+    //Loop through vector and set all high numbers to 0
+    if(found){
+        for(int port = 0; port < ports; port++){
+            if (countMatrix[agent][port] != i)
+                countMatrix[agent][port] = 0;
+        }
+    }
+    cout << "Grant\n";
+    printMatrix(countMatrix);
     return countMatrix;
 }
 
