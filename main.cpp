@@ -107,33 +107,36 @@ vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, ve
 
 vector< vector < int > > buildGrantMatrix(vector< vector < int > > countMatrix, int agents, int ports){
     //Loop through each vector and find the lowest number
-    bool found = false;
-    int agent = 0;
-    int i = 1;
-    while(not found){
 
-        for (int port = 0; port < ports; port++){
-            cout << countMatrix[agent][port] << endl;
-            if (countMatrix[agent][port] == i)
-                found = true;
+    for (int agent = 0; agent < agents; agent++) {
+        bool found = false;
+        int i = 1;
+        while (not found) {
+
+            for (int port = 0; port < ports; port++) {
+                if (countMatrix[agent][port] == i)
+                    found = true;
+            }
+            if (found)
+                break;
+            i += 1;
+            if (i > agents)
+                break;
         }
-        if (found)
-            break;
-        i += 1;
-        if (i > agents)
-            break;
-    }
-    //Loop through vector and set all high numbers to 0
-    if(found){
-        for(int port = 0; port < ports; port++){
-            if (countMatrix[agent][port] != i)
-                countMatrix[agent][port] = 0;
+        //Loop through vector and set all high numbers to 0
+        if (found) {
+            for (int port = 0; port < ports; port++) {
+                if (countMatrix[agent][port] != i)
+                    countMatrix[agent][port] = 0;
+            }
         }
+
     }
-    cout << "Grant\n";
+    cout << "Grant Matrix\n----\n";
     printMatrix(countMatrix);
     return countMatrix;
 }
+
 
 int getCounts(vector<vector <int> > requestMatrix, int agents, int port){
     /*Get the number of requests for a given port and return it*/
