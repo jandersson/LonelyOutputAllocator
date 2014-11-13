@@ -100,13 +100,13 @@ void openDataFile(){
 //        grantMatrix = resolveRowDuplicates(grantMatrix, column, dupeList, agents);
 //
 //    }
-//    for(int row = 0; row < agents; row++){
-//        //Reverse rows with columns to do input first arbitration (resolve row conflicts)
-//        dupeList = checkForDuplicates(grantMatrix2, row, ports);
-//        grantMatrix2 = resolveDuplicates(grantMatrix2, row, dupeList, ports);
-//    }
+    for(int column = 0; column < ports; column++){
+        //Reverse rows with columns to do input first arbitration (resolve row conflicts)
+        dupeList = checkColumnForDuplicates(grantMatrix, agents, column);
+        grantMatrix = resolveColumnDuplicates(grantMatrix, column, dupeList, agents);
+    }
 //    //Arbitration is performed to select a single request at each output port
-//    printMatrix(grantMatrix, "Output First Grant Matrix");
+    printMatrix(grantMatrix, "Output First Grant Matrix");
 //    printMatrix(grantMatrix2, "Input First Grant Matrix");
 }
 
@@ -214,14 +214,19 @@ vector< int > checkColumnForDuplicates(vector< vector < int > > matrix, int rows
             index_list.push_back(row);
         }
     }
+    if (index_list.size() == 1){
+        index_list.resize(0);
+    }
     return index_list;
 }
 
 vector< vector < int > > resolveColumnDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
         int rows){
     //Select a random index from the dupeList and then set all the other elements of the matrix column to 0
-    if(not dupeList.empty()){
+    if((not dupeList.empty()) or (dupeList.size() == 1)){
         int randomIndex = rand() % dupeList.size();
+        cout << "Col: " << column << endl;
+        cout << randomIndex << endl;
         for (int row = 0; row < rows; row++){
             if(row == dupeList[randomIndex])
                 continue;
