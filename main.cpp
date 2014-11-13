@@ -225,8 +225,6 @@ vector< vector < int > > resolveColumnDuplicates(vector < vector < int > > matri
     //Select a random index from the dupeList and then set all the other elements of the matrix column to 0
     if((not dupeList.empty()) or (dupeList.size() == 1)){
         int randomIndex = rand() % dupeList.size();
-        cout << "Col: " << column << endl;
-        cout << randomIndex << endl;
         for (int row = 0; row < rows; row++){
             if(row == dupeList[randomIndex])
                 continue;
