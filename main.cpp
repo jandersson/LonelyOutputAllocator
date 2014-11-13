@@ -263,6 +263,6 @@ vector< vector < int > > resolveRowDuplicates(vector < vector < int > > matrix, 
     return matrix;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     openDataFile();
 }
