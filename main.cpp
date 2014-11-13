@@ -37,11 +37,13 @@ int getCounts(vector<vector <int> >, int , int);
 vector<vector< int > > buildCountMatrix(vector<vector< int > >, vector<int> , int , int);
 vector< vector < int > > buildGrantMatrix(vector< vector < int > >, int , int);
 void printMatrix(vector< vector < int > >, string);
-vector< int > checkForDuplicates(vector< vector < int >> matrix, int column, int rows);
+vector< int > checkRowForDuplicates(vector< vector < int >>, int, int);
+vector< int > checkColumnForDuplicates(vector< vector < int > >, int, int);
 void printVector(vector<int> counts);
-vector < vector< int > > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
+vector < vector< int > > resolveRowDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
         int rows);
-
+vector < vector< int > > resolveColumnDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
+        int rows);
 void openDataFile(){
     /* Opens a data file for reading
      * Reads in the first line to get the row and column numbers
@@ -91,20 +93,21 @@ void openDataFile(){
 
     vector< vector < int > > grantMatrix = buildGrantMatrix(countMatrix, agents, ports);
     vector< vector < int > > grantMatrix2 = grantMatrix;
+    printMatrix(grantMatrix, "Original Grant Matrix");
     vector< int > dupeList;
-    for(int column = 0; column < ports; column++){
-        dupeList = checkForDuplicates(grantMatrix, column, agents);
-        grantMatrix = resolveDuplicates(grantMatrix, column, dupeList, agents);
-
-    }
-    for(int row = 0; row < agents; row++){
-        //Reverse rows with columns to do input first arbitration
-        dupeList = checkForDuplicates(grantMatrix2, row, ports);
-        grantMatrix2 = resolveDuplicates(grantMatrix2, row, dupeList, ports);
-    }
-    //Arbitration is performed to select a single request at each output port
-    printMatrix(grantMatrix, "Output First Grant Matrix");
-    printMatrix(grantMatrix2, "Input First Grant Matrix");
+//    for(int column = 0; column < ports; column++){
+//        dupeList = checkRowForDuplicates(grantMatrix, column, agents);
+//        grantMatrix = resolveRowDuplicates(grantMatrix, column, dupeList, agents);
+//
+//    }
+//    for(int row = 0; row < agents; row++){
+//        //Reverse rows with columns to do input first arbitration (resolve row conflicts)
+//        dupeList = checkForDuplicates(grantMatrix2, row, ports);
+//        grantMatrix2 = resolveDuplicates(grantMatrix2, row, dupeList, ports);
+//    }
+//    //Arbitration is performed to select a single request at each output port
+//    printMatrix(grantMatrix, "Output First Grant Matrix");
+//    printMatrix(grantMatrix2, "Input First Grant Matrix");
 }
 
 vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, vector<int> counts, int agents, int ports){
@@ -151,6 +154,11 @@ vector< vector < int > > buildGrantMatrix(vector< vector < int > > countMatrix, 
         }
 
     }
+    vector < int > dupeList;
+    for(int row = 0; row < agents; row++){
+        dupeList = checkRowForDuplicates(countMatrix, row, ports);
+        countMatrix = resolveRowDuplicates(countMatrix, row, dupeList, ports);
+    }
     return countMatrix;
 }
 
@@ -168,9 +176,11 @@ int getCounts(vector<vector <int> > requestMatrix, int agents, int port){
 
 void printVector(vector<int> counts){
     //Print out counts vector
+    cout << "\n------\n";
     for(auto it = counts.begin(); it != counts.end(); it++){
         cout << *it;
     }
+    cout << "\n------\n";
 }
 
 void printMatrix(vector< vector < int > > matrix, string name){
@@ -183,7 +193,19 @@ void printMatrix(vector< vector < int > > matrix, string name){
     }
 }
 
-vector< int > checkForDuplicates(vector< vector < int > > matrix, int column, int rows){
+vector< int > checkRowForDuplicates(vector< vector < int > > matrix, int row, int columns){
+    /*Given a row in a matrix, checks the row for non-zero entries and stores the column index in a vector
+    * Returns: a vector of column indices where a non-zero entry occurs*/
+    vector< int > index_list;
+    for(int column = 0; column < columns; column++){
+        if (matrix[row][column]){
+            index_list.push_back(column);
+        }
+    }
+    return index_list;
+}
+
+vector< int > checkColumnForDuplicates(vector< vector < int > > matrix, int rows, int column){
     /*Given a column in a matrix, checks the column for non-zero entries and stores the row index in a vector
     * Returns: a vector of row indices where a non-zero entry occurs*/
     vector< int > index_list;
@@ -195,13 +217,28 @@ vector< int > checkForDuplicates(vector< vector < int > > matrix, int column, in
     return index_list;
 }
 
-vector< vector < int > > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
+vector< vector < int > > resolveColumnDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
         int rows){
     //Select a random index from the dupeList and then set all the other elements of the matrix column to 0
     if(not dupeList.empty()){
         int randomIndex = rand() % dupeList.size();
         for (int row = 0; row < rows; row++){
             if(row == dupeList[randomIndex])
+                continue;
+            matrix[row][column] = 0;
+        }
+    }
+
+    return matrix;
+}
+
+vector< vector < int > > resolveRowDuplicates(vector < vector < int > > matrix, int row, vector < int > dupeList,
+        int columns){
+    //Select a random index from the dupeList and then set all the other elements of the matrix row to 0
+    if(not dupeList.empty()){
+        int randomIndex = rand() % dupeList.size();
+        for (int column = 0; column < columns; column++){
+            if(column == dupeList[randomIndex])
                 continue;
             matrix[row][column] = 0;
         }
