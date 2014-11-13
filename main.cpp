@@ -79,10 +79,10 @@ void openDataFile(){
             cout << '\n';
         }
             }
-
+    //Tracing Code, prints out the number of rows and columns in the input matrix
     cout << "Agents: " << agents << endl;
     cout << "Ports: " << ports << endl;
-    // Print out the request matrix
+    //Tracing Code, print out the request matrix
     printMatrix(requestMatrix, "Request Matrix");
 
     vector<int> counts;
@@ -96,17 +96,22 @@ void openDataFile(){
     vector< vector < int > > grantMatrix = buildGrantMatrix(countMatrix, agents, ports);
     vector< vector < int > > grantMatrix2 = buildGrantMatrixOutputFirst(countMatrix,agents,ports);
     grantMatrix2 = makeAllOnes(grantMatrix2, agents, ports);
-    printMatrix(grantMatrix2,"OutputFirstTest");
     grantMatrix = makeAllOnes(grantMatrix, agents, ports);
-    printMatrix(grantMatrix, "Grant Matrix");
-    vector< int > dupeList;
 
+    vector< int > dupeList;
     for(int column = 0; column < ports; column++){
-        //Reverse rows with columns to do input first arbitration (resolve row conflicts)
+        //Resolve conflicts
         dupeList = checkColumnForDuplicates(grantMatrix, agents, column);
         grantMatrix = resolveColumnDuplicates(grantMatrix, column, dupeList, agents);
     }
+    dupeList.resize(0);
+    for(int row = 0; row < agents; row++){
+        //Resolve conflicts
+        dupeList = checkRowForDuplicates(grantMatrix2, row, ports);
+        grantMatrix2 = resolveRowDuplicates(grantMatrix2, row, dupeList, ports);
+    }
 //    //Arbitration is performed to select a single request at each output port
+    printMatrix(grantMatrix2, "Output First Grant Matrix");
     printMatrix(grantMatrix, "Input First Grant Matrix");
 }
 
