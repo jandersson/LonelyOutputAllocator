@@ -1,21 +1,21 @@
 #include "Matrix.h"
-
+#include <vector>
 Matrix::Matrix(){
 
 }
 Matrix::~Matrix(){
 
 }
-void setRows(rows){
+void Matrix::setRows(rows){
     this.rows = rows;
 }
-void setColumns(columns){
+void Matrix::setColumns(columns){
     this.columns = columns;
 }
-int getRows(){
+int Matrix::getRows(){
     return this.rows;
 }
-int getColumns(){
+int Matrix::getColumns(){
     return this.columns;
 }
 void Matrix::printMatrix() {
@@ -26,5 +26,8 @@ void Matrix::printMatrix() {
         }
         cout << endl;
     }
+
+}
+void Matrix::addRow(vector< int > row){
 
 }

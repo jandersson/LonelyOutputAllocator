@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <vector>
+
 class Matrix{
 private:
 
@@ -18,6 +19,7 @@ public:
     int getRows();
     int getColumns();
     void printMatrix();
+    void addRow(vector<int> row);
 
 };
 

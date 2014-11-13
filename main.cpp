@@ -29,7 +29,6 @@ Sample Input:
 #include <vector>
 #include <sstream>
 #include <stdlib.h>
-#include "Matrix.h"
 
 using namespace std;
 
@@ -38,6 +37,9 @@ int getCounts(vector<vector <int> >, int , int);
 vector<vector< int > > buildCountMatrix(vector<vector< int > >, vector<int> , int , int);
 vector< vector < int > > buildGrantMatrix(vector< vector < int > >, int , int);
 void printMatrix(vector< vector < int > >);
+vector< int > checkForDuplicates(vector< vector < int >> matrix, int column, int rows);
+void printVector(vector<int> counts);
+vector< int > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList, int rows);
 
 void openDataFile(){
     /* Opens a data file for reading
@@ -48,7 +50,6 @@ void openDataFile(){
     string token;
     stringstream iss;
     ifstream dataFile;
-    Matrix *requestMatrix2 = new Matrix();
     vector<vector<int> > requestMatrix;
     string line = "";
     dataFile.open(fileName);
@@ -89,7 +90,10 @@ void openDataFile(){
     cout << "Count Matrix\n------\n";
     printMatrix(countMatrix);
 
-    buildGrantMatrix(countMatrix, agents, ports);
+    vector< vector < int > > grantMatrix = buildGrantMatrix(countMatrix, agents, ports);
+
+    vector< int > row2dupes = checkForDuplicates(grantMatrix, 2, agents);
+    resolveDuplicates(grantMatrix, 2, row2dupes, agents);
 }
 
 vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, vector<int> counts, int agents, int ports){
@@ -166,6 +170,28 @@ void printMatrix(vector< vector < int > > matrix){
             cout << *itt;
         }
         cout << endl;
+    }
+}
+
+vector< int > checkForDuplicates(vector< vector < int > > matrix, int column, int rows){
+    /*Given a column in a matrix, checks the column for non-zero entries and stores the row index in a vector
+    * Returns: a vector of row indices where a non-zero entry occurs*/
+    vector< int > index_list;
+    for(int row = 0; row < rows; row++){
+        if (matrix[row][column]){
+            index_list.push_back(row);
+        }
+    }
+    return index_list;
+}
+
+vector< int > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList, int rows){
+    //Select a random index from the dupeList and then set all the other elements of the matrix column to 0
+    int randomIndex = rand() % dupeList.size();
+    for (int row = 0; row < rows; row++){
+        if(row == randomIndex)
+            continue;
+        matrix[row][column] = 0;
     }
 }
 
