@@ -13,6 +13,10 @@ public:
 
     Matrix();
     ~Matrix();
+    void setRows(int rows);
+    void setColumns(int columns);
+    int getRows();
+    int getColumns();
     void printMatrix();
 
 };
