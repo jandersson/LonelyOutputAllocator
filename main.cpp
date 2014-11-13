@@ -44,6 +44,7 @@ vector < vector< int > > resolveRowDuplicates(vector < vector < int > > matrix, 
         int rows);
 vector < vector< int > > resolveColumnDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
         int rows);
+vector < vector < int > > makeAllOnes(vector < vector < int > > matrix, int rows, int columns);
 void openDataFile(){
     /* Opens a data file for reading
      * Reads in the first line to get the row and column numbers
@@ -94,6 +95,8 @@ void openDataFile(){
     vector< vector < int > > grantMatrix = buildGrantMatrix(countMatrix, agents, ports);
     vector< vector < int > > grantMatrix2 = grantMatrix;
     printMatrix(grantMatrix, "Original Grant Matrix");
+    grantMatrix = makeAllOnes(grantMatrix, agents, ports);
+    printMatrix(grantMatrix, "All ones Grant Matrix");
     vector< int > dupeList;
 //    for(int column = 0; column < ports; column++){
 //        dupeList = checkRowForDuplicates(grantMatrix, column, agents);
@@ -232,6 +235,16 @@ vector< vector < int > > resolveColumnDuplicates(vector < vector < int > > matri
         }
     }
 
+    return matrix;
+}
+
+vector < vector < int > > makeAllOnes(vector < vector < int > > matrix, int rows, int columns){
+    for (int row = 0; row < rows; row++){
+        for (int column = 0; column < columns; column++){
+            if(matrix[row][column])
+                matrix[row][column] = 1;
+        }
+    }
     return matrix;
 }
 
