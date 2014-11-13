@@ -3,9 +3,13 @@
 
 #include <vector>
 class Matrix{
+private:
+
     std::vector< vector < int > > matrix;
     int rows;
     int columns;
+
+public:
 
     Matrix();
     ~Matrix();

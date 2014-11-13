@@ -29,6 +29,7 @@ Sample Input:
 #include <vector>
 #include <sstream>
 #include <stdlib.h>
+#include "Matrix.h"
 
 using namespace std;
 
@@ -39,12 +40,15 @@ vector< vector < int > > buildGrantMatrix(vector< vector < int > >, int , int);
 void printMatrix(vector< vector < int > >);
 
 void openDataFile(){
-    /* Opens a data file for reading */
+    /* Opens a data file for reading
+     * Reads in the first line to get the row and column numbers
+      * Creates a matrix to hold the data in the data file as elements in the matrix*/
     string fileName = "mytest.txt";
     char delimiter = ' ';
     string token;
     stringstream iss;
     ifstream dataFile;
+    Matrix *requestMatrix2 = new Matrix();
     vector<vector<int> > requestMatrix;
     string line = "";
     dataFile.open(fileName);
