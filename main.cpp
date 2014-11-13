@@ -36,10 +36,11 @@ using namespace std;
 int getCounts(vector<vector <int> >, int , int);
 vector<vector< int > > buildCountMatrix(vector<vector< int > >, vector<int> , int , int);
 vector< vector < int > > buildGrantMatrix(vector< vector < int > >, int , int);
-void printMatrix(vector< vector < int > >);
+void printMatrix(vector< vector < int > >, string);
 vector< int > checkForDuplicates(vector< vector < int >> matrix, int column, int rows);
 void printVector(vector<int> counts);
-vector< int > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList, int rows);
+vector < vector< int > > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
+        int rows);
 
 void openDataFile(){
     /* Opens a data file for reading
@@ -77,9 +78,8 @@ void openDataFile(){
 
     cout << "Agents: " << agents << endl;
     cout << "Ports: " << ports << endl;
-    cout << "Request Matrix\n-------\n";
     // Print out the request matrix
-    printMatrix(requestMatrix);
+    printMatrix(requestMatrix, "Request Matrix");
 
     vector<int> counts;
     for(int port = 0; port < ports; port++){
@@ -87,13 +87,17 @@ void openDataFile(){
     }
 
     vector< vector < int > > countMatrix = buildCountMatrix(requestMatrix, counts, agents, ports);
-    cout << "Count Matrix\n------\n";
-    printMatrix(countMatrix);
+    printMatrix(countMatrix, "Count Matrix");
 
     vector< vector < int > > grantMatrix = buildGrantMatrix(countMatrix, agents, ports);
+    vector< int > dupeList;
+    cout << "Entering loop\n";
+    for(int column = 0; column < ports; column++){
+        dupeList = checkForDuplicates(grantMatrix, column, agents);
+        grantMatrix = resolveDuplicates(grantMatrix, column, dupeList, agents);
+        printMatrix(grantMatrix, "Grant Matrix");
+    }
 
-    vector< int > row2dupes = checkForDuplicates(grantMatrix, 2, agents);
-    resolveDuplicates(grantMatrix, 2, row2dupes, agents);
 }
 
 vector<vector< int > > buildCountMatrix(vector<vector< int > > requestMatrix, vector<int> counts, int agents, int ports){
@@ -140,8 +144,7 @@ vector< vector < int > > buildGrantMatrix(vector< vector < int > > countMatrix, 
         }
 
     }
-    cout << "Grant Matrix\n----\n";
-    printMatrix(countMatrix);
+    printMatrix(countMatrix, "Grant Matrix");
     return countMatrix;
 }
 
@@ -164,7 +167,8 @@ void printVector(vector<int> counts){
     }
 }
 
-void printMatrix(vector< vector < int > > matrix){
+void printMatrix(vector< vector < int > > matrix, string name){
+    cout << "------\n" << name << "\n" << "------\n";
     for(auto it = matrix.begin(); it != matrix.end(); it++){
         for (auto itt = it->begin(); itt != it->end(); itt++){
             cout << *itt;
@@ -185,14 +189,20 @@ vector< int > checkForDuplicates(vector< vector < int > > matrix, int column, in
     return index_list;
 }
 
-vector< int > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList, int rows){
+vector< vector < int > > resolveDuplicates(vector < vector < int > > matrix, int column, vector < int > dupeList,
+        int rows){
     //Select a random index from the dupeList and then set all the other elements of the matrix column to 0
-    int randomIndex = rand() % dupeList.size();
-    for (int row = 0; row < rows; row++){
-        if(row == randomIndex)
-            continue;
-        matrix[row][column] = 0;
+    if(not dupeList.empty()){
+        int randomIndex = rand() % dupeList.size();
+        cout << "Random index: " << randomIndex << "\n";
+        for (int row = 0; row < rows; row++){
+            if(row == dupeList[randomIndex])
+                continue;
+            matrix[row][column] = 0;
+        }
     }
+
+    return matrix;
 }
 
 int main() {
